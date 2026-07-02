@@ -1,0 +1,561 @@
+"""
+Railway Public API - GraphQL Schema (fragment)
+
+Transport reality: Railway exposes a GraphQL-first Public API. Queries and
+mutations are POSTed to https://backboard.railway.com/graphql/v2. Real-time
+log streams are delivered as GraphQL subscriptions over WebSocket at
+wss://backboard.railway.com/graphql/v2. There is no REST API.
+
+This SDL is a hand-authored fragment covering the confirmed public operation
+groups: projects, services, deployments, environments, variables, volumes,
+plugins, custom domains, TCP proxies, usage/metrics, teams/workspaces,
+webhooks, and logs. It is not the complete Railway schema; consult the live
+introspection at the endpoint above for exhaustive type coverage.
+"""
+
+# ─────────────────────────────────────────────
+# Scalars
+# ─────────────────────────────────────────────
+
+scalar DateTime
+scalar JSON
+scalar ServiceVariables
+
+# ─────────────────────────────────────────────
+# Enums
+# ─────────────────────────────────────────────
+
+enum DeploymentStatus {
+  BUILDING
+  DEPLOYING
+  SUCCESS
+  FAILED
+  CRASHED
+  REMOVED
+  REMOVING
+  SKIPPED
+  INITIALIZING
+  QUEUED
+  WAITING
+  SLEEPING
+}
+
+enum LogSeverity {
+  INFO
+  WARN
+  ERROR
+  DEBUG
+}
+
+enum PluginType {
+  POSTGRESQL
+  MYSQL
+  REDIS
+  MONGODB
+}
+
+enum RegistryCredentialSource {
+  DOCKERHUB
+  GITHUB
+  GHCR
+}
+
+enum WebhookStatus {
+  ACTIVE
+  DISABLED
+}
+
+# ─────────────────────────────────────────────
+# Connection / pagination wrappers
+# ─────────────────────────────────────────────
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type ProjectConnection {
+  edges: [ProjectEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProjectEdge {
+  cursor: String!
+  node: Project!
+}
+
+type ServiceConnection {
+  edges: [ServiceEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ServiceEdge {
+  cursor: String!
+  node: Service!
+}
+
+type EnvironmentConnection {
+  edges: [EnvironmentEdge!]!
+  pageInfo: PageInfo!
+}
+
+type EnvironmentEdge {
+  cursor: String!
+  node: Environment!
+}
+
+type DeploymentConnection {
+  edges: [DeploymentEdge!]!
+  pageInfo: PageInfo!
+}
+
+type DeploymentEdge {
+  cursor: String!
+  node: Deployment!
+}
+
+# ─────────────────────────────────────────────
+# Core entity types
+# ─────────────────────────────────────────────
+
+type User {
+  id: ID!
+  name: String
+  email: String!
+  avatar: String
+  createdAt: DateTime!
+}
+
+type Workspace {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  team: Team
+}
+
+type Team {
+  id: ID!
+  name: String!
+  members: [TeamMember!]!
+}
+
+type TeamMember {
+  id: ID!
+  role: String!
+  user: User!
+}
+
+type Project {
+  id: ID!
+  name: String!
+  description: String
+  isPublic: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  services: ServiceConnection!
+  environments: EnvironmentConnection!
+  deployments: DeploymentConnection!
+}
+
+type Service {
+  id: ID!
+  name: String!
+  projectId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  icon: String
+  deployments: DeploymentConnection!
+}
+
+type ServiceInstance {
+  id: ID!
+  serviceId: String!
+  environmentId: String!
+  buildCommand: String
+  startCommand: String
+  numReplicas: Int
+  rootDirectory: String
+  healthcheckPath: String
+  region: String
+  source: ServiceSource
+}
+
+type ServiceSource {
+  repo: String
+  image: String
+  branch: String
+}
+
+type Environment {
+  id: ID!
+  name: String!
+  projectId: String!
+  createdAt: DateTime!
+  isEphemeral: Boolean!
+}
+
+type Deployment {
+  id: ID!
+  status: DeploymentStatus!
+  serviceId: String!
+  environmentId: String!
+  projectId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  staticUrl: String
+  url: String
+  meta: JSON
+  canRedeploy: Boolean!
+}
+
+type Variable {
+  id: ID!
+  name: String!
+  value: String
+  serviceId: String
+  environmentId: String!
+}
+
+type Volume {
+  id: ID!
+  name: String!
+  projectId: String!
+  createdAt: DateTime!
+}
+
+type VolumeInstance {
+  id: ID!
+  volumeId: String!
+  serviceId: String!
+  environmentId: String!
+  mountPath: String!
+  sizeMB: Int
+  currentSizeMB: Int
+}
+
+type Plugin {
+  id: ID!
+  name: String!
+  type: PluginType
+  projectId: String!
+  createdAt: DateTime!
+}
+
+type CustomDomain {
+  id: ID!
+  domain: String!
+  serviceId: String!
+  environmentId: String!
+  status: JSON
+}
+
+type ServiceDomain {
+  id: ID!
+  domain: String!
+  serviceId: String!
+  environmentId: String!
+}
+
+type TCPProxy {
+  id: ID!
+  domain: String!
+  proxyPort: Int!
+  applicationPort: Int!
+  serviceId: String!
+  environmentId: String!
+}
+
+type Webhook {
+  id: ID!
+  url: String!
+  projectId: String!
+  status: WebhookStatus!
+  lastStatus: Int
+  createdAt: DateTime!
+}
+
+type LogEntry {
+  timestamp: DateTime!
+  message: String!
+  severity: LogSeverity
+  tags: JSON
+  attributes: JSON
+}
+
+type MetricMeasurement {
+  measurement: String!
+  values: [MetricValue!]!
+}
+
+type MetricValue {
+  ts: Int!
+  value: Float!
+}
+
+type EstimatedUsage {
+  measurement: String!
+  estimatedValue: Float!
+}
+
+type Usage {
+  measurement: String!
+  value: Float!
+}
+
+# ─────────────────────────────────────────────
+# Input types
+# ─────────────────────────────────────────────
+
+input ProjectCreateInput {
+  name: String
+  description: String
+  isPublic: Boolean
+  teamId: String
+}
+
+input ProjectUpdateInput {
+  name: String
+  description: String
+  isPublic: Boolean
+}
+
+input ServiceCreateInput {
+  projectId: String!
+  name: String
+  environmentId: String
+  branch: String
+  source: ServiceSourceInput
+  variables: ServiceVariables
+}
+
+input ServiceSourceInput {
+  repo: String
+  image: String
+}
+
+input ServiceInstanceUpdateInput {
+  buildCommand: String
+  startCommand: String
+  numReplicas: Int
+  rootDirectory: String
+  healthcheckPath: String
+  region: String
+}
+
+input EnvironmentCreateInput {
+  projectId: String!
+  name: String!
+  sourceEnvironmentId: String
+}
+
+input VariableUpsertInput {
+  projectId: String!
+  environmentId: String!
+  serviceId: String
+  name: String!
+  value: String!
+}
+
+input VariableCollectionUpsertInput {
+  projectId: String!
+  environmentId: String!
+  serviceId: String
+  variables: ServiceVariables!
+  replace: Boolean
+}
+
+input VolumeCreateInput {
+  projectId: String!
+  environmentId: String!
+  serviceId: String!
+  mountPath: String!
+}
+
+input PluginCreateInput {
+  projectId: String!
+  name: PluginType!
+}
+
+input CustomDomainCreateInput {
+  serviceId: String!
+  environmentId: String!
+  domain: String!
+  targetPort: Int
+}
+
+input TCPProxyCreateInput {
+  serviceId: String!
+  environmentId: String!
+  applicationPort: Int!
+}
+
+input WebhookCreateInput {
+  projectId: String!
+  url: String!
+}
+
+# ─────────────────────────────────────────────
+# Query root
+# ─────────────────────────────────────────────
+
+type Query {
+  "The authenticated account."
+  me: User!
+
+  "A workspace by id."
+  workspace(workspaceId: String!): Workspace
+
+  "Workspaces the account belongs to."
+  workspaces: [Workspace!]!
+
+  "A project by id."
+  project(id: String!): Project!
+
+  "Projects visible to the token."
+  projects(first: Int, after: String): ProjectConnection!
+
+  "A service by id."
+  service(id: String!): Service!
+
+  "A service instance for a service in an environment."
+  serviceInstance(serviceId: String!, environmentId: String!): ServiceInstance!
+
+  "An environment by id."
+  environment(id: String!): Environment!
+
+  "A deployment by id."
+  deployment(id: String!): Deployment!
+
+  "Deployments filtered by project / service / environment."
+  deployments(input: JSON, first: Int, after: String): DeploymentConnection!
+
+  "Variables for a service or environment."
+  variables(projectId: String!, environmentId: String!, serviceId: String): JSON!
+
+  "A volume by id."
+  volume(id: String!): Volume!
+
+  "A plugin by id."
+  plugin(id: String!): Plugin!
+
+  "A custom domain by id."
+  customDomain(id: String!): CustomDomain!
+
+  "Custom + service domains for a service instance."
+  domains(projectId: String!, environmentId: String!, serviceId: String!): JSON!
+
+  "TCP proxies for a service instance."
+  tcpProxies(environmentId: String!, serviceId: String!): [TCPProxy!]!
+
+  "Webhooks configured on a project."
+  projectWebhooks(projectId: String!): [Webhook!]!
+
+  "Point-in-time build logs for a deployment."
+  buildLogs(deploymentId: String!, filter: String, limit: Int, startDate: DateTime, endDate: DateTime): [LogEntry!]!
+
+  "Point-in-time runtime deployment logs."
+  deploymentLogs(deploymentId: String!, filter: String, limit: Int, startDate: DateTime, endDate: DateTime): [LogEntry!]!
+
+  "Point-in-time environment logs across services."
+  environmentLogs(environmentId: String!, filter: String, limit: Int): [LogEntry!]!
+
+  "HTTP request logs for a deployment."
+  httpLogs(deploymentId: String!, filter: String, limit: Int): [LogEntry!]!
+
+  "Resource usage for a workspace / project."
+  usage(workspaceId: String, projectId: String, measurements: [String!]): [Usage!]!
+
+  "Estimated (unbilled) usage for the current cycle."
+  estimatedUsage(workspaceId: String, projectId: String): [EstimatedUsage!]!
+
+  "Time-series metrics (CPU, memory, egress, disk)."
+  metrics(projectId: String!, environmentId: String, serviceId: String, measurements: [String!]!, startDate: DateTime!): [MetricMeasurement!]!
+}
+
+# ─────────────────────────────────────────────
+# Mutation root
+# ─────────────────────────────────────────────
+
+type Mutation {
+  # Projects
+  projectCreate(input: ProjectCreateInput!): Project!
+  projectUpdate(id: String!, input: ProjectUpdateInput!): Project!
+  projectDelete(id: String!): Boolean!
+
+  # Services
+  serviceCreate(input: ServiceCreateInput!): Service!
+  serviceUpdate(id: String!, input: JSON!): Service!
+  serviceInstanceUpdate(serviceId: String!, environmentId: String!, input: ServiceInstanceUpdateInput!): Boolean!
+  serviceConnect(id: String!, input: ServiceSourceInput!): Service!
+  serviceDisconnect(id: String!): Service!
+  serviceDelete(id: String!, environmentId: String): Boolean!
+
+  # Deployments
+  serviceInstanceDeployV2(serviceId: String!, environmentId: String!): String!
+  serviceInstanceRedeploy(serviceId: String!, environmentId: String!): Boolean!
+  deploymentRedeploy(id: String!): Deployment!
+  deploymentRestart(id: String!): Boolean!
+  deploymentStop(id: String!): Boolean!
+  deploymentCancel(id: String!): Boolean!
+  deploymentRemove(id: String!): Boolean!
+
+  # Environments
+  environmentCreate(input: EnvironmentCreateInput!): Environment!
+  environmentDelete(id: String!): Boolean!
+  environmentPatchCommitStage(environmentId: String!): Boolean!
+
+  # Variables
+  variableUpsert(input: VariableUpsertInput!): Boolean!
+  variableDelete(projectId: String!, environmentId: String!, serviceId: String, name: String!): Boolean!
+  variableCollectionUpsert(input: VariableCollectionUpsertInput!): Boolean!
+
+  # Volumes
+  volumeCreate(input: VolumeCreateInput!): Volume!
+  volumeUpdate(id: String!, name: String): Volume!
+  volumeDelete(id: String!): Boolean!
+  volumeInstanceUpdate(volumeId: String!, environmentId: String!, mountPath: String): Boolean!
+
+  # Plugins
+  pluginCreate(input: PluginCreateInput!): Plugin!
+  pluginUpdate(id: String!, name: String): Plugin!
+  pluginRestart(id: String!, environmentId: String!): Boolean!
+  pluginDelete(id: String!): Boolean!
+
+  # Custom domains
+  customDomainCreate(input: CustomDomainCreateInput!): CustomDomain!
+  customDomainDelete(id: String!): Boolean!
+  serviceDomainCreate(serviceId: String!, environmentId: String!): ServiceDomain!
+
+  # TCP proxies
+  tcpProxyCreate(input: TCPProxyCreateInput!): TCPProxy!
+  tcpProxyDelete(id: String!): Boolean!
+
+  # Webhooks
+  webhookCreate(input: WebhookCreateInput!): Webhook!
+  webhookUpdate(id: String!, url: String): Webhook!
+  webhookDelete(id: String!): Boolean!
+
+  # Teams / workspaces
+  workspaceUpdate(id: String!, name: String!): Workspace!
+  teamMemberInvite(teamId: String!, email: String!, role: String!): TeamMember!
+}
+
+# ─────────────────────────────────────────────
+# Subscription root (WebSocket: wss://backboard.railway.com/graphql/v2)
+# ─────────────────────────────────────────────
+
+type Subscription {
+  "Stream build logs for a deployment in real time."
+  buildLogs(deploymentId: String!, filter: String): [LogEntry!]!
+
+  "Stream runtime deployment logs in real time."
+  deploymentLogs(deploymentId: String!, filter: String): [LogEntry!]!
+
+  "Stream logs across every service in an environment."
+  environmentLogs(environmentId: String!, filter: String): [LogEntry!]!
+
+  "Stream HTTP request logs for a deployment."
+  httpLogs(deploymentId: String!, filter: String): [LogEntry!]!
+}

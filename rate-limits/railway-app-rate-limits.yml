@@ -1,0 +1,85 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Railway
+providerId: railway-app
+created: '2026-07-02'
+modified: '2026-07-02'
+reconciled: true
+tags:
+- Deployment
+- PaaS
+- Cloud
+- GraphQL
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  Railway enforces per-plan rate limits on the GraphQL Public API
+  (https://backboard.railway.com/graphql/v2), expressed as requests per hour
+  (RPH) and, on paid plans, requests per second (RPS). Limits scale with the
+  workspace plan: Free/Trial, Hobby, Pro, and Enterprise. Every response carries
+  X-RateLimit-* headers so clients can track remaining quota, and throttled
+  requests return HTTP 429 with a Retry-After header.
+notes: >-
+  Values reflect Railway's published Public API rate limits as of the review
+  date. Enterprise limits are custom. Verify current numbers on the Public API
+  reference during reconciliation.
+sources:
+- https://docs.railway.com/reference/public-api
+- https://docs.railway.com/integrations/api/graphql-overview
+- https://railway.com/pricing
+responseCodes:
+  throttled: 429
+responseHeaders:
+- X-RateLimit-Limit
+- X-RateLimit-Remaining
+- X-RateLimit-Reset
+- Retry-After
+limits:
+- name: Free / Trial Requests Per Hour
+  scope: account
+  metric: requests
+  limit: 100
+  timeFrame: hour
+  notes: Applies to the Trial tier before a paid plan is attached.
+- name: Hobby Requests Per Hour
+  scope: workspace
+  metric: requests
+  limit: 1000
+  timeFrame: hour
+  notes: Hobby plan hourly ceiling on GraphQL Public API calls.
+- name: Hobby Requests Per Second
+  scope: workspace
+  metric: requests
+  limit: 10
+  timeFrame: second
+  notes: Hobby plan burst ceiling.
+- name: Pro Requests Per Hour
+  scope: workspace
+  metric: requests
+  limit: 10000
+  timeFrame: hour
+  notes: Pro plan hourly ceiling on GraphQL Public API calls.
+- name: Pro Requests Per Second
+  scope: workspace
+  metric: requests
+  limit: 50
+  timeFrame: second
+  notes: Pro plan burst ceiling.
+- name: Enterprise
+  scope: workspace
+  metric: requests
+  limit: custom
+  timeFrame: hour
+  notes: Negotiated custom rate limits.
+policies:
+- name: Tiered Limits
+  description: Rate limits increase as workspaces move from Trial to Hobby to Pro to Enterprise.
+- name: Header-Based Tracking
+  description: Clients should read X-RateLimit-Remaining and X-RateLimit-Reset to pace requests.
+- name: Backoff Strategy
+  description: On HTTP 429, honor the Retry-After header and apply exponential backoff with jitter.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,190 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Railway GraphQL Public API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{railwayToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "me - current account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://backboard.railway.com/graphql/v2",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query { me { id name email } }\"}"
+            }
+          },
+          "docs": "Returns the authenticated Railway account."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Projects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "project - get a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://backboard.railway.com/graphql/v2",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query project($id: String!) { project(id: $id) { id name } }\",\"variables\":{\"id\":\"\"}}"
+            }
+          },
+          "docs": "Fetch a project by id."
+        },
+        {
+          "info": {
+            "name": "projectCreate - create a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://backboard.railway.com/graphql/v2",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation projectCreate($input: ProjectCreateInput!) { projectCreate(input: $input) { id name } }\",\"variables\":{\"input\":{\"name\":\"my-project\"}}}"
+            }
+          },
+          "docs": "Create a new project."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Services",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "serviceCreate - create a service",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://backboard.railway.com/graphql/v2",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation serviceCreate($input: ServiceCreateInput!) { serviceCreate(input: $input) { id name } }\",\"variables\":{\"input\":{\"projectId\":\"\"}}}"
+            }
+          },
+          "docs": "Create a service in a project."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Deployments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "serviceInstanceDeployV2 - deploy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://backboard.railway.com/graphql/v2",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation serviceInstanceDeployV2($serviceId: String!, $environmentId: String!) { serviceInstanceDeployV2(serviceId: $serviceId, environmentId: $environmentId) }\",\"variables\":{\"serviceId\":\"\",\"environmentId\":\"\"}}"
+            }
+          },
+          "docs": "Trigger a deployment of a service instance."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Variables",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "variableUpsert - set a variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://backboard.railway.com/graphql/v2",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation variableUpsert($input: VariableUpsertInput!) { variableUpsert(input: $input) }\",\"variables\":{\"input\":{\"projectId\":\"\",\"environmentId\":\"\",\"name\":\"KEY\",\"value\":\"value\"}}}"
+            }
+          },
+          "docs": "Create or update a configuration variable."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Logs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "deploymentLogs - query logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://backboard.railway.com/graphql/v2",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query deploymentLogs($deploymentId: String!) { deploymentLogs(deploymentId: $deploymentId) { timestamp message severity } }\",\"variables\":{\"deploymentId\":\"\"}}"
+            }
+          },
+          "docs": "Fetch point-in-time deployment logs. For real-time streaming, use the deploymentLogs GraphQL subscription over wss://backboard.railway.com/graphql/v2."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

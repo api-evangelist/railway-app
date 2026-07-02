@@ -1,0 +1,297 @@
+aid: railway-app
+url: https://raw.githubusercontent.com/api-evangelist/railway-app/refs/heads/main/apis.yml
+name: Railway
+kind: company
+description: Railway is a cloud application deployment platform (PaaS) that builds,
+  deploys, and scales services, databases, and cron jobs from a Git repository or
+  Docker image. Its programmatic surface is a GraphQL-first Public API served at
+  https://backboard.railway.com/graphql/v2 - the same API that powers the Railway
+  dashboard. There is no REST API; all queries and mutations are issued as GraphQL
+  POST requests, and real-time build, deployment, and environment log streams are
+  delivered as GraphQL subscriptions over a WebSocket endpoint at
+  wss://backboard.railway.com/graphql/v2.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Deployment
+- PaaS
+- Cloud
+- Infrastructure
+- GraphQL
+- DevOps
+created: '2026-07-02'
+modified: '2026-07-02'
+specificationVersion: '0.19'
+apis:
+- aid: railway-app:railway-app-projects-api
+  name: Railway Projects API
+  tags:
+  - Projects
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: https://docs.railway.com/integrations/api/graphql-overview
+    type: APIReference
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for creating, reading, updating, and deleting
+    Railway projects - the top-level container for services and environments.
+    Queries include project and projects; mutations include projectCreate,
+    projectUpdate, and projectDelete.
+- aid: railway-app:railway-app-services-api
+  name: Railway Services API
+  tags:
+  - Services
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/integrations/api/manage-services
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/integrations/api/manage-services
+    type: Documentation
+  - url: https://docs.railway.com/integrations/api/manage-services
+    type: APIReference
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for managing services and their per-environment
+    service instances. Queries include service and serviceInstance; mutations
+    include serviceCreate, serviceUpdate, serviceInstanceUpdate, serviceConnect,
+    serviceDisconnect, and serviceDelete.
+- aid: railway-app:railway-app-deployments-api
+  name: Railway Deployments API
+  tags:
+  - Deployments
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/integrations/api/manage-services
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/integrations/api/manage-services
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for triggering and managing deployments.
+    Queries include deployment and deployments; mutations include
+    serviceInstanceDeployV2, serviceInstanceRedeploy, deploymentRedeploy,
+    deploymentRestart, deploymentStop, deploymentCancel, and deploymentRemove.
+- aid: railway-app:railway-app-environments-api
+  name: Railway Environments API
+  tags:
+  - Environments
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for isolated project environments (for example
+    production and staging). Queries include environment and environments;
+    mutations include environmentCreate, environmentDelete, and environmentPatchCommitStage.
+- aid: railway-app:railway-app-variables-api
+  name: Railway Variables API
+  tags:
+  - Variables
+  - Configuration
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for service and environment configuration
+    variables. Queries include variables; mutations include variableUpsert,
+    variableDelete, and variableCollectionUpsert for bulk updates.
+- aid: railway-app:railway-app-volumes-api
+  name: Railway Volumes API
+  tags:
+  - Volumes
+  - Storage
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for persistent volumes attached to services.
+    Queries include volume; mutations include volumeCreate, volumeUpdate,
+    volumeDelete, and volumeInstanceUpdate for per-environment mounts.
+- aid: railway-app:railway-app-plugins-api
+  name: Railway Plugins API
+  tags:
+  - Plugins
+  - Databases
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for legacy plugins (managed database add-ons
+    such as Postgres, MySQL, Redis, and MongoDB). Queries include plugin;
+    mutations include pluginCreate, pluginUpdate, pluginRestart, and pluginDelete.
+- aid: railway-app:railway-app-custom-domains-api
+  name: Railway Custom Domains API
+  tags:
+  - Custom Domains
+  - Networking
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for attaching custom and Railway-provided
+    domains to a service. Queries include customDomain and domains; mutations
+    include customDomainCreate, customDomainDelete, and serviceDomainCreate.
+- aid: railway-app:railway-app-tcp-proxies-api
+  name: Railway TCP Proxies API
+  tags:
+  - TCP Proxy
+  - Networking
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for exposing a service over raw TCP. Queries
+    include tcpProxies; mutations include tcpProxyCreate and tcpProxyDelete.
+- aid: railway-app:railway-app-usage-metrics-api
+  name: Railway Usage and Metrics API
+  tags:
+  - Usage
+  - Metrics
+  - Billing
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for reading resource consumption and cost.
+    Queries include usage, estimatedUsage, and metrics for per-service vCPU,
+    memory, network egress, and disk utilization.
+- aid: railway-app:railway-app-teams-api
+  name: Railway Teams and Workspaces API
+  tags:
+  - Teams
+  - Workspaces
+  - Members
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for the authenticated account, its workspaces,
+    teams, and members. Queries include me, workspace, and workspaces; mutations
+    include workspaceUpdate and teamMemberInvite.
+- aid: railway-app:railway-app-webhooks-api
+  name: Railway Webhooks API
+  tags:
+  - Webhooks
+  - Events
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for project webhooks that notify external URLs
+    of deployment status changes. Queries include projectWebhooks; mutations
+    include webhookCreate, webhookUpdate, and webhookDelete.
+- aid: railway-app:railway-app-logs-api
+  name: Railway Logs API
+  tags:
+  - Logs
+  - Subscriptions
+  - WebSocket
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.railway.com/reference/public-api
+  baseURL: https://backboard.railway.com/graphql/v2
+  properties:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+  - url: graphql/railway-app-graphql.md
+    type: GraphQL
+  - url: graphql/railway-app-schema.graphql
+    type: GraphQL
+  - url: asyncapi/railway-app-asyncapi.yml
+    type: AsyncAPI
+  description: GraphQL log surface for builds, deployments, environments, and HTTP
+    traffic. Available both as point-in-time queries (buildLogs, deploymentLogs,
+    environmentLogs, httpLogs) and as real-time GraphQL subscriptions over
+    WebSocket at wss://backboard.railway.com/graphql/v2.
+common:
+- type: GitHubOrganization
+  url: https://github.com/railwayapp
+- type: LinkedIn
+  url: https://www.linkedin.com/company/railwayapp
+- type: Website
+  url: https://railway.com/
+- type: Documentation
+  url: https://docs.railway.com
+- type: Plans
+  url: plans/railway-app-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/railway-app-rate-limits.yml
+- type: FinOps
+  url: finops/railway-app-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

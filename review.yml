@@ -1,0 +1,142 @@
+aid: railway-app
+name: Railway
+review:
+  question: Does Railway expose a documented public WebSocket API?
+  answer: true
+  date: '2026-07-02'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: true
+  asyncapiScopeNote: |
+    Railway does publish a documented public WebSocket transport. Its GraphQL
+    Public API is served over both HTTP (queries and mutations at
+    https://backboard.railway.com/graphql/v2) and WebSocket (GraphQL
+    subscriptions at wss://backboard.railway.com/graphql/v2). An AsyncAPI 2.6
+    document was authored at asyncapi/railway-app-asyncapi.yml describing the
+    four documented log subscription streams (buildLogs, deploymentLogs,
+    environmentLogs, httpLogs) delivered over the graphql-transport-ws /
+    graphql-ws WebSocket subprotocol. The request/response half of the API
+    (queries + mutations) is modeled in graphql/railway-app-schema.graphql.
+findings:
+  summary: |
+    Railway is a cloud application deployment platform (PaaS). Its entire
+    programmatic surface is a GraphQL-first Public API - there is no REST API.
+    Queries and mutations are HTTP POST requests to
+    https://backboard.railway.com/graphql/v2. Real-time log streams are
+    delivered as GraphQL subscriptions over a WebSocket endpoint at
+    wss://backboard.railway.com/graphql/v2, using the standard
+    GraphQL-over-WebSocket subprotocol. This WebSocket log stream is what the
+    `railway logs` CLI streams from and what community tooling like
+    `railway-chord` taps for centralized logging. Because a real, documented
+    WebSocket subscription surface exists, the answer to the review question is
+    true and an AsyncAPI document was created for it.
+  transportModel: GraphQL-first
+  transports:
+    - protocol: GraphQL over HTTP
+      scheme: https
+      endpoint: https://backboard.railway.com/graphql/v2
+      documented: true
+      note: All queries and mutations are POSTed here as { query, variables }. No REST API exists.
+    - protocol: GraphQL Subscriptions over WebSocket
+      scheme: wss
+      endpoint: wss://backboard.railway.com/graphql/v2
+      documented: true
+      note: Real-time log streaming (buildLogs, deploymentLogs, environmentLogs, httpLogs) via graphql-transport-ws / graphql-ws. This is a documented public WebSocket surface.
+    - protocol: REST
+      scheme: https
+      documented: false
+      note: Railway does not publish a REST API. Do not model an OpenAPI document.
+  authentication:
+    - type: Account token
+      header: 'Authorization: Bearer'
+      scope: All resources across every workspace the account belongs to.
+    - type: Workspace token
+      header: 'Authorization: Bearer'
+      scope: A single workspace.
+    - type: Project token
+      header: 'Project-Access-Token'
+      scope: A single project environment.
+    - type: OAuth access token
+      header: 'Authorization: Bearer'
+      scope: User-granted permissions.
+  endpointsConfirmedGraphQL:
+    queries:
+      - me
+      - workspace
+      - project
+      - projects
+      - service
+      - serviceInstance
+      - environment
+      - deployment
+      - deployments
+      - buildLogs
+      - deploymentLogs
+      - environmentLogs
+      - httpLogs
+    mutations:
+      - projectCreate
+      - projectUpdate
+      - projectDelete
+      - serviceCreate
+      - serviceUpdate
+      - serviceInstanceUpdate
+      - serviceConnect
+      - serviceDisconnect
+      - serviceInstanceDeployV2
+      - serviceInstanceRedeploy
+      - serviceDelete
+      - environmentCreate
+      - environmentDelete
+      - variableUpsert
+      - variableDelete
+      - customDomainCreate
+      - tcpProxyCreate
+    subscriptions:
+      - buildLogs
+      - deploymentLogs
+      - environmentLogs
+      - httpLogs
+  endpointsModeledGraphQL:
+    note: |
+      Additional operations modeled in graphql/railway-app-schema.graphql that
+      are consistent with Railway's public schema but not each individually
+      re-confirmed from a docs page during this review, e.g. variableCollectionUpsert,
+      volumeCreate/volumeUpdate/volumeDelete/volumeInstanceUpdate,
+      pluginCreate/pluginUpdate/pluginRestart/pluginDelete, customDomainDelete,
+      serviceDomainCreate, tcpProxyDelete, webhookCreate/webhookUpdate/webhookDelete,
+      environmentPatchCommitStage, workspaceUpdate, teamMemberInvite,
+      deploymentRedeploy/deploymentRestart/deploymentStop/deploymentCancel/deploymentRemove,
+      usage, estimatedUsage, metrics.
+sources:
+  - url: https://docs.railway.com/reference/public-api
+    type: Documentation
+    note: Confirms GraphQL endpoint https://backboard.railway.com/graphql/v2, the four token types, example me/workspace/projectToken queries, and per-plan rate limits (100/1000/10000 RPH).
+  - url: https://docs.railway.com/integrations/api/graphql-overview
+    type: APIReference
+    note: GraphQL introduction; example project, me, deployments queries and projectCreate mutation.
+  - url: https://docs.railway.com/integrations/api/manage-services
+    type: APIReference
+    note: Service and deployment mutations - serviceCreate, serviceUpdate, serviceInstanceUpdate, serviceConnect, serviceDisconnect, serviceInstanceDeployV2, serviceInstanceRedeploy, serviceDelete.
+  - url: https://docs.railway.com/cli/logs
+    type: Documentation
+    note: railway logs streams logs in real time over a WebSocket when no --lines/--since/--until is given.
+  - url: https://github.com/half0wl/railway-chord
+    type: SourceCode
+    note: Community tool that pipes Railway's GraphQL log subscription stream into Vector - evidence of the documented WebSocket log stream.
+  - url: https://www.postman.com/railway-4865/railway/collection/adgthpg/railway-graphql-api
+    type: Collection
+    note: Railway-published Postman collection of GraphQL operations.
+  - url: https://railway.com/pricing
+    type: Pricing
+    note: Trial ($5 credit) / Hobby ($5/mo) / Pro ($20/seat/mo) / Enterprise; usage-based vCPU, memory, egress, volume.
+actions:
+  asyncapiPath: asyncapi/railway-app-asyncapi.yml
+  apisYmlUpdated: true
+  openapiCreated: false
+  reason: |
+    Railway exposes a documented public WebSocket surface (GraphQL subscriptions
+    for log streaming over wss://backboard.railway.com/graphql/v2), so an
+    AsyncAPI 2.6 document was authored for the four log subscription streams and
+    referenced from the Railway Logs API entry in apis.yml. No OpenAPI document
+    was created because Railway does not publish a REST API - the entire surface
+    is GraphQL, modeled in graphql/railway-app-schema.graphql.

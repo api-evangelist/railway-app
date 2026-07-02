@@ -1,0 +1,234 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Railway
+providerId: railway-app
+created: '2026-07-02'
+modified: '2026-07-02'
+reconciled: true
+tags:
+- Deployment
+- PaaS
+- Cloud
+- Infrastructure
+- GraphQL
+- Plans
+description: >-
+  Railway combines a flat monthly subscription with usage-based billing for the
+  compute, memory, egress, and storage each service actually consumes, metered
+  per second. The GraphQL Public API is available on every paid plan; the plan a
+  workspace is on determines the API rate limit (requests per hour and requests
+  per second). Plans are Trial (one-time $5 credit), Hobby ($5/month), Pro
+  ($20/month per seat), and Enterprise (custom).
+notes: >-
+  Subscription prices and per-resource rates as published on the Railway pricing
+  page; usage rates are billed per second and shown here normalized to common
+  units. Verify current values on the pricing page and in the @railway/pricing
+  package during reconciliation.
+sources:
+- https://railway.com/pricing
+- https://docs.railway.com/pricing/plans
+- https://docs.railway.com/reference/public-api
+plans:
+- id: railway-trial
+  name: Trial
+  type: free
+  description: >-
+    One-time $5 of usage credit with no credit card required, intended for
+    evaluating the platform. Includes GraphQL Public API access at the lowest
+    rate limit tier.
+  entries:
+  - label: Trial Credit
+    name: trial_credit
+    type: flat
+    metric: credit
+    limit: 5
+    timeFrame: once
+    geo: global
+    unit: 1
+    price: $5 one-time credit
+    userMultiplied: false
+  - label: API Requests Per Hour
+    name: api_rph
+    type: limit
+    metric: requests
+    limit: 100
+    timeFrame: hour
+    geo: global
+    unit: 1
+    price: included
+    userMultiplied: false
+  elements:
+  - name: GraphQL Public API
+  - name: Deployments
+  - name: Community Support
+- id: railway-hobby
+  name: Hobby
+  type: paid
+  description: >-
+    Entry paid plan at $5/month that includes $5 of usage, then bills
+    usage-based resource consumption beyond the included amount.
+  entries:
+  - label: Monthly Subscription
+    name: hobby_subscription
+    type: flat
+    metric: subscription
+    limit: 1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $5 per month (includes $5 usage)
+    userMultiplied: false
+  - label: API Requests Per Hour
+    name: api_rph
+    type: limit
+    metric: requests
+    limit: 1000
+    timeFrame: hour
+    geo: global
+    unit: 1
+    price: included
+    userMultiplied: false
+  - label: API Requests Per Second
+    name: api_rps
+    type: limit
+    metric: requests
+    limit: 10
+    timeFrame: second
+    geo: global
+    unit: 1
+    price: included
+    userMultiplied: false
+  elements:
+  - name: GraphQL Public API
+  - name: Usage-Based Compute
+  - name: Persistent Volumes
+  - name: Custom Domains
+- id: railway-pro
+  name: Pro
+  type: paid
+  description: >-
+    Team plan at $20/month per seat with higher usage limits, team collaboration,
+    higher API rate limits, and priority support.
+  entries:
+  - label: Monthly Subscription Per Seat
+    name: pro_subscription
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $20 per seat per month
+    userMultiplied: true
+  - label: API Requests Per Hour
+    name: api_rph
+    type: limit
+    metric: requests
+    limit: 10000
+    timeFrame: hour
+    geo: global
+    unit: 1
+    price: included
+    userMultiplied: false
+  - label: API Requests Per Second
+    name: api_rps
+    type: limit
+    metric: requests
+    limit: 50
+    timeFrame: second
+    geo: global
+    unit: 1
+    price: included
+    userMultiplied: false
+  elements:
+  - name: GraphQL Public API
+  - name: Usage-Based Compute
+  - name: Team Collaboration
+  - name: Priority Support
+- id: railway-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Custom plan with negotiated usage rates, SLAs, dedicated support, and custom
+    API rate limits. Contact Railway sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  - label: API Rate Limits
+    name: api_rate_limit
+    type: limit
+    metric: requests
+    limit: -1
+    timeFrame: hour
+    geo: global
+    unit: 1
+    price: custom
+    userMultiplied: false
+  elements:
+  - name: Custom Usage Rates
+  - name: SLAs
+  - name: Dedicated Support
+- id: railway-usage
+  name: Usage-Based Resources
+  type: usage
+  description: >-
+    Metered per-second billing for the compute, memory, egress, and storage each
+    service consumes. Applies on top of the Hobby, Pro, and Enterprise plans.
+  entries:
+  - label: vCPU
+    name: vcpu
+    type: usage
+    metric: vcpu
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.000463 per vCPU/minute (~$20 per vCPU/month)
+    userMultiplied: false
+  - label: Memory
+    name: memory
+    type: usage
+    metric: gigabytes
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.000231 per GB/minute (~$10 per GB/month)
+    userMultiplied: false
+  - label: Network Egress
+    name: egress
+    type: usage
+    metric: gigabytes
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.05 per GB
+    userMultiplied: false
+  - label: Volume Storage
+    name: volume_storage
+    type: usage
+    metric: gigabytes
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: ~$0.15 per GB/month (billed per second)
+    userMultiplied: false
+  elements:
+  - name: Compute
+  - name: Memory
+  - name: Egress
+  - name: Volumes
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

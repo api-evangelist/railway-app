@@ -1,0 +1,154 @@
+{
+  "info": {
+    "name": "Railway GraphQL Public API",
+    "description": "GraphQL-first Public API for Railway. All operations are HTTP POST requests to https://backboard.railway.com/graphql/v2. Real-time log streaming is available as GraphQL subscriptions over WebSocket at wss://backboard.railway.com/graphql/v2. Authenticate with an account, workspace, or OAuth token via the Authorization: Bearer header (project tokens use the Project-Access-Token header).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{railwayToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://backboard.railway.com/graphql/v2" }
+  ],
+  "item": [
+    {
+      "name": "Account",
+      "item": [
+        {
+          "name": "me - current account",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { me { id name email } }\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "project - get a project",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query project($id: String!) { project(id: $id) { id name } }\",\n  \"variables\": { \"id\": \"\" }\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "projectCreate - create a project",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation projectCreate($input: ProjectCreateInput!) { projectCreate(input: $input) { id name } }\",\n  \"variables\": { \"input\": { \"name\": \"my-project\" } }\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "serviceCreate - create a service",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation serviceCreate($input: ServiceCreateInput!) { serviceCreate(input: $input) { id name } }\",\n  \"variables\": { \"input\": { \"projectId\": \"\" } }\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deployments",
+      "item": [
+        {
+          "name": "serviceInstanceDeployV2 - deploy",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation serviceInstanceDeployV2($serviceId: String!, $environmentId: String!) { serviceInstanceDeployV2(serviceId: $serviceId, environmentId: $environmentId) }\",\n  \"variables\": { \"serviceId\": \"\", \"environmentId\": \"\" }\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Variables",
+      "item": [
+        {
+          "name": "variableUpsert - set a variable",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation variableUpsert($input: VariableUpsertInput!) { variableUpsert(input: $input) }\",\n  \"variables\": { \"input\": { \"projectId\": \"\", \"environmentId\": \"\", \"name\": \"KEY\", \"value\": \"value\" } }\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logs",
+      "item": [
+        {
+          "name": "deploymentLogs - query logs",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query deploymentLogs($deploymentId: String!) { deploymentLogs(deploymentId: $deploymentId) { timestamp message severity } }\",\n  \"variables\": { \"deploymentId\": \"\" }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Point-in-time deployment logs. Real-time streaming is available as the deploymentLogs GraphQL subscription over wss://backboard.railway.com/graphql/v2."
+          }
+        }
+      ]
+    }
+  ]
+}

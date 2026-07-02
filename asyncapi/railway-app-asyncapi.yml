@@ -1,0 +1,142 @@
+asyncapi: '2.6.0'
+id: 'urn:com:railway:backboard:graphql:subscriptions'
+info:
+  title: Railway GraphQL Subscriptions (WebSocket)
+  version: '1.0.0'
+  description: |
+    AsyncAPI 2.6 description of Railway's **real-time log streaming** surface.
+
+    Unlike many providers in this catalog, Railway **does** publish a documented
+    public WebSocket transport. Railway's GraphQL Public API is served over both
+    HTTP (queries and mutations) and WebSocket (subscriptions):
+
+      - HTTP:      https://backboard.railway.com/graphql/v2
+      - WebSocket: wss://backboard.railway.com/graphql/v2
+
+    GraphQL subscriptions are delivered over the WebSocket endpoint using the
+    standard GraphQL-over-WebSocket protocol (graphql-transport-ws / graphql-ws).
+    This is the transport the `railway logs` CLI command uses to stream logs in
+    real time, and the same one community tools such as `railway-chord` use to
+    egress Railway logs into external sinks.
+
+    This document models the four documented log subscription streams:
+    buildLogs, deploymentLogs, environmentLogs, and httpLogs. Queries and
+    mutations (the request/response half of the API) are modeled in the
+    companion GraphQL SDL at `graphql/railway-app-schema.graphql`.
+  contact:
+    name: API Evangelist
+    email: kin@apievangelist.com
+    url: https://apievangelist.com
+  license:
+    name: API documentation - Railway Terms of Service
+    url: https://railway.com/legal/terms
+  x-transport-notes:
+    transport: GraphQL subscriptions over WebSocket
+    subprotocol: graphql-transport-ws / graphql-ws
+    protocol: wss
+    direction: server-to-client (push after client-initiated subscribe)
+    endpoint: 'wss://backboard.railway.com/graphql/v2'
+    isWebSocket: true
+    source: https://docs.railway.com/reference/public-api
+defaultContentType: application/json
+servers:
+  backboard:
+    url: backboard.railway.com/graphql/v2
+    protocol: wss
+    description: |
+      Railway GraphQL WebSocket endpoint. Clients open a WebSocket using a
+      GraphQL-over-WebSocket subprotocol, send a `connection_init` with the
+      Bearer token, then `subscribe` to one of the log streams below. The
+      server pushes `next` messages carrying batches of log entries until the
+      client sends `complete` or the socket closes.
+    security:
+      - bearerAuth: []
+channels:
+  deploymentLogs:
+    description: |
+      Real-time runtime logs for a single deployment. Opened via the GraphQL
+      `subscription deploymentLogs(deploymentId: String!)`.
+    subscribe:
+      operationId: streamDeploymentLogs
+      summary: Stream runtime deployment logs.
+      message:
+        $ref: '#/components/messages/LogEntry'
+  buildLogs:
+    description: |
+      Real-time build logs for a deployment. Opened via the GraphQL
+      `subscription buildLogs(deploymentId: String!)`.
+    subscribe:
+      operationId: streamBuildLogs
+      summary: Stream build logs.
+      message:
+        $ref: '#/components/messages/LogEntry'
+  environmentLogs:
+    description: |
+      Real-time logs across every service in an environment. Opened via the
+      GraphQL `subscription environmentLogs(environmentId: String!)`.
+    subscribe:
+      operationId: streamEnvironmentLogs
+      summary: Stream environment-wide logs.
+      message:
+        $ref: '#/components/messages/LogEntry'
+  httpLogs:
+    description: |
+      Real-time HTTP request logs for a deployment. Opened via the GraphQL
+      `subscription httpLogs(deploymentId: String!)`.
+    subscribe:
+      operationId: streamHttpLogs
+      summary: Stream HTTP request logs.
+      message:
+        $ref: '#/components/messages/LogEntry'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Railway API token'
+      description: |
+        Railway account, workspace, or OAuth token. Passed in the WebSocket
+        `connection_init` payload as `{ "Authorization": "Bearer <TOKEN>" }`.
+  messages:
+    LogEntry:
+      name: LogEntry
+      title: Log entry
+      summary: A single log line pushed on a subscription stream.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LogEntry'
+      examples:
+        - name: infoLine
+          summary: An informational log line
+          payload:
+            timestamp: '2026-07-02T18:24:14Z'
+            message: 'Starting Container'
+            severity: 'INFO'
+  schemas:
+    LogEntry:
+      type: object
+      required:
+        - timestamp
+        - message
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: When the log line was emitted.
+        message:
+          type: string
+          description: The log message text.
+        severity:
+          type: string
+          enum:
+            - INFO
+            - WARN
+            - ERROR
+            - DEBUG
+          description: Log severity, when classified.
+        tags:
+          type: object
+          description: Structured tags attached to the log line (service, deployment, etc.).
+        attributes:
+          type: object
+          description: Additional structured attributes parsed from the log line.

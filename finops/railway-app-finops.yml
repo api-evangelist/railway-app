@@ -1,0 +1,115 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Railway
+providerId: railway-app
+created: '2026-07-02'
+modified: '2026-07-02'
+reconciled: true
+tags:
+- Deployment
+- PaaS
+- Cloud
+- Infrastructure
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Railway spend. Railway bills a flat monthly subscription (Hobby
+  $5, Pro $20/seat) plus usage-based resource consumption metered per second:
+  vCPU, memory (GB), network egress (GB), and volume storage (GB). Object storage
+  is billed per GB-month with free egress. The GraphQL usage, estimatedUsage, and
+  metrics queries expose consumption for allocation and forecasting.
+notes: >-
+  Per-resource rates are subject to change; verify against the Railway pricing
+  page and the @railway/pricing package during reconciliation.
+sources:
+- https://railway.com/pricing
+- https://docs.railway.com/reference/public-api
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Railway
+serviceCategory: Compute
+billingModel:
+  pricingCategory: Usage-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+  - Adjustment
+focusColumns:
+  ServiceName: Railway
+  ServiceCategory: Compute
+  ProviderName: Railway
+  PublisherName: Railway
+  InvoiceIssuerName: Railway
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Usage-Based
+meters:
+- name: vcpu_minutes
+  description: vCPU consumed by running services, billed per second (~$0.000463 per vCPU/minute).
+  unit: vcpu-minutes
+  aggregation: sum
+  dimensions:
+  - workspace
+  - project
+  - service
+  - environment
+- name: memory_gb_minutes
+  description: Memory (RAM) consumed by running services, billed per second (~$0.000231 per GB/minute).
+  unit: gb-minutes
+  aggregation: sum
+  dimensions:
+  - workspace
+  - project
+  - service
+  - environment
+- name: network_egress_gb
+  description: Outbound network egress from services, billed per GB ($0.05 per GB).
+  unit: gigabytes
+  aggregation: sum
+  dimensions:
+  - workspace
+  - project
+  - service
+- name: volume_storage_gb_minutes
+  description: Persistent volume storage, billed per second (~$0.15 per GB/month).
+  unit: gb-minutes
+  aggregation: sum
+  dimensions:
+  - workspace
+  - project
+  - service
+  - volume
+- name: object_storage_gb_month
+  description: Object storage, billed per GB-month with free egress.
+  unit: gb-month
+  aggregation: sum
+  dimensions:
+  - workspace
+  - project
+- name: subscription_seats
+  description: Flat monthly plan subscription (Pro billed per seat).
+  unit: seats
+  aggregation: sum
+  dimensions:
+  - workspace
+principles:
+- name: Visibility
+  description: Query usage, estimatedUsage, and metrics via the GraphQL Public API to inspect per-service vCPU, memory, egress, and disk burn.
+- name: Allocation
+  description: Tag spend by project, service, and environment; map workspaces to internal cost centers.
+- name: Optimization
+  description: Right-size replicas and resource limits, enable app sleeping for idle services, and reduce egress with caching to cut usage-based charges.
+- name: Accountability
+  description: Assign owners per project/environment and review estimatedUsage against budget mid-cycle before the invoice lands.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
