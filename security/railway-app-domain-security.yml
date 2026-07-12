@@ -1,0 +1,26 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: railway.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 14 09:27:50 2026 GMT
+  hsts: false
+- host: docs.railway.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep  2 17:08:08 2026 GMT
+  hsts: false
+- host: backboard.railway.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 14 23:19:47 2026 GMT
+  hsts: false
+domains:
+- domain: railway.com
+  dnssec: true
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine

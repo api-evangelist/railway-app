@@ -278,6 +278,10 @@ apis:
     environmentLogs, httpLogs) and as real-time GraphQL subscriptions over
     WebSocket at wss://backboard.railway.com/graphql/v2.
 common:
+- type: TrustCenter
+  url: security/railway-app-trust-center.yml
+- type: DomainSecurity
+  url: security/railway-app-domain-security.yml
 - type: GitHubOrganization
   url: https://github.com/railwayapp
 - type: LinkedIn
@@ -292,6 +296,8 @@ common:
   url: rate-limits/railway-app-rate-limits.yml
 - type: FinOps
   url: finops/railway-app-finops.yml
+- type: Blog
+  url: https://blog.railway.com/rss.xml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
