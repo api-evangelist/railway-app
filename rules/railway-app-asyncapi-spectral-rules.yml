@@ -1,0 +1,68 @@
+# railway-app — AsyncAPI Spectral ruleset (strengthened)
+# Plain Spectral. Rules measured from this provider's own AsyncAPI event
+# conventions by strengthen_asyncapi.py, then self-validated against the spec.
+#
+# Provenance:
+#   - server-secure-protocol: 100% of servers already secure
+#   - server-security-defined: 1/1 servers
+#   - security-schemes: ['bearerAuth']
+#   - channel-key-casing: camel @ 100% (n=4)
+#   - payload-property-casing: snake @ 100% (n=10)
+#   - operation-id-casing: camel @ 100% (n=4, v2)
+extends:
+  - spectral:asyncapi
+rules:
+  server-secure-protocol:
+    description: Servers should use a secure protocol (this API's convention).
+    severity: error
+    given: $.servers[*].protocol
+    then:
+      function: pattern
+      functionOptions:
+        match: ^(amqps|https|ibmmq|jms|kafka-secure|mqtts|secure-mqtt|stomps|wss)$
+  server-security-defined:
+    description: Servers should declare their security requirements.
+    severity: warn
+    given: $.servers[*]
+    then:
+      field: security
+      function: truthy
+  security-schemes-defined:
+    description: Security schemes should be defined in components.
+    severity: warn
+    given: $.components
+    then:
+      field: securitySchemes
+      function: truthy
+  channel-key-casing:
+    description: Channel names should be camelCase (the dominant convention in this API).
+    severity: warn
+    given: $.channels
+    then:
+      field: '@key'
+      function: casing
+      functionOptions:
+        type: camel
+  payload-property-casing:
+    description: Message payload properties should be snake_case (the dominant convention in this API).
+    severity: warn
+    given: $.components.schemas[*].properties
+    then:
+      field: '@key'
+      function: casing
+      functionOptions:
+        type: snake
+  operation-id-casing:
+    description: Operation IDs should be camelCase (the dominant convention in this API).
+    severity: warn
+    given: $.channels[*][publish,subscribe].operationId
+    then:
+      function: casing
+      functionOptions:
+        type: camel
+  no-empty-descriptions:
+    description: Descriptions must not be empty strings.
+    severity: warn
+    given: $..description
+    then:
+      function: truthy
