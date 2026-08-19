@@ -32,7 +32,7 @@ tags:
 - DevOps
 created: '2026-07-02'
 modified: '2026-07-02'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: railway-app:railway-app-projects-api
   name: Railway Projects API
