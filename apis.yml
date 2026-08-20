@@ -25,6 +25,13 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/railway-app.png
 tags:
 - Deployment
+- Platform-as-a-Service
+- Cloud
+- Infrastructure
+- GraphQL
+- DevOps
+tags_raw:
+- Deployment
 - PaaS
 - Cloud
 - Infrastructure
@@ -37,6 +44,9 @@ apis:
 - aid: railway-app:railway-app-projects-api
   name: Railway Projects API
   tags:
+  - Project
+  - GraphQL
+  tags_raw:
   - Projects
   - GraphQL
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
@@ -79,6 +89,9 @@ apis:
 - aid: railway-app:railway-app-deployments-api
   name: Railway Deployments API
   tags:
+  - Deployment
+  - GraphQL
+  tags_raw:
   - Deployments
   - GraphQL
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
@@ -230,6 +243,11 @@ apis:
 - aid: railway-app:railway-app-teams-api
   name: Railway Teams and Workspaces API
   tags:
+  - Team
+  - Workspaces
+  - Members
+  - GraphQL
+  tags_raw:
   - Teams
   - Workspaces
   - Members
@@ -250,6 +268,10 @@ apis:
 - aid: railway-app:railway-app-webhooks-api
   name: Railway Webhooks API
   tags:
+  - Webhook
+  - Event
+  - GraphQL
+  tags_raw:
   - Webhooks
   - Events
   - GraphQL
@@ -269,6 +291,11 @@ apis:
 - aid: railway-app:railway-app-logs-api
   name: Railway Logs API
   tags:
+  - Logs
+  - Subscription
+  - WebSocket
+  - GraphQL
+  tags_raw:
   - Logs
   - Subscriptions
   - WebSocket
