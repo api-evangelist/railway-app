@@ -36,7 +36,7 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/railway-app.png
 tags:
 - Deployment
-- PaaS
+- Platform-as-a-Service
 - Cloud
 - Infrastructure
 - GraphQL
