@@ -122,6 +122,9 @@ apis:
 - aid: railway-app:railway-app-environments-api
   name: Railway Environments API
   tags:
+  - Environment
+  - GraphQL
+  tags_raw:
   - Environments
   - GraphQL
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
@@ -178,6 +181,10 @@ apis:
 - aid: railway-app:railway-app-plugins-api
   name: Railway Plugins API
   tags:
+  - Plugins
+  - Database
+  - GraphQL
+  tags_raw:
   - Plugins
   - Databases
   - GraphQL
@@ -255,7 +262,7 @@ apis:
   name: Railway Teams and Workspaces API
   tags:
   - Team
-  - Workspaces
+  - Workspace
   - Members
   - GraphQL
   tags_raw:
