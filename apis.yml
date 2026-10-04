@@ -41,6 +41,7 @@ tags:
 - Infrastructure
 - GraphQL
 - DevOps
+- Real-Time
 tags_raw:
 - Deployment
 - PaaS
@@ -48,6 +49,7 @@ tags_raw:
 - Infrastructure
 - GraphQL
 - DevOps
+- Real-Time
 created: '2026-07-02'
 modified: '2026-07-02'
 specificationVersion: '0.23'
