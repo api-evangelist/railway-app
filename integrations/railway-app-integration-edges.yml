@@ -1,4 +1,21 @@
 edges:
+- partner_name: Stripe (own)
+  partner: stripe
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.stripe.com/apps/railway
+  mirror_of: stripe/integrations/stripe-integration-edges.yml
+  apps:
+  - Railway
+  listing_count: 1
+  detected: '2026-10-15'
+  detected_by: mirror-platform-listings.py
+  category: developer_tools
 - partner_name: MCP Registry
   partner: mcp
   partner_match: register
@@ -14,7 +31,7 @@ edges:
     registered_name: com.railway/mcp
     register_id: com.railway/mcp
     detected_by: sweep-agent-tools.py
-    detected: '2026-10-14'
+    detected: '2026-10-15'
   mcp_registry:
     servers:
     - com.railway/mcp
@@ -34,3 +51,6 @@ generated: '2026-10-14'
 method: searched
 checked:
 - https://registry.modelcontextprotocol.io/v0/servers
+- stripe/integrations/stripe-integration-edges.yml
+source:
+- stripe/integrations/stripe-integration-edges.yml
