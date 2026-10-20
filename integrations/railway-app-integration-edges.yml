@@ -111,18 +111,18 @@ edges:
 generated: '2026-10-14'
 method: searched
 checked:
-- https://registry.modelcontextprotocol.io/v0/servers
-- stripe/integrations/stripe-integration-edges.yml
-- https://manrs.org/netops/participants/
-- https://www.peeringdb.com/api/fac
-- https://www.peeringdb.com/api/ix
-- https://www.peeringdb.com/api/net
 - https://cdn.winget.microsoft.com/cache
 - https://formulae.brew.sh/api/cask.json
 - https://formulae.brew.sh/api/formula.json
 - https://github.com/ScoopInstaller/Extras
 - https://github.com/ScoopInstaller/Main
+- https://manrs.org/netops/participants/
 - https://pypi.org/pypi
+- https://registry.modelcontextprotocol.io/v0/servers
 - https://registry.npmjs.org
+- https://www.peeringdb.com/api/fac
+- https://www.peeringdb.com/api/ix
+- https://www.peeringdb.com/api/net
+- stripe/integrations/stripe-integration-edges.yml
 source:
 - stripe/integrations/stripe-integration-edges.yml
