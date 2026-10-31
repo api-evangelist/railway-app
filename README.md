@@ -1,4 +1,4 @@
-# Railway (railway-app)
+# Railway
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,114 +64,150 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Railway is a cloud application deployment platform (PaaS) that builds, deploys, and scales services, databases, and cron jobs from a Git repository or Docker image. Its programmatic surface is a **GraphQL-first Public API** served at `https://backboard.railway.com/graphql/v2` - the same API that powers the Railway dashboard. **There is no REST API.** All queries and mutations are GraphQL POST requests, and real-time build, deployment, and environment log streams are delivered as **GraphQL subscriptions over WebSocket** at `wss://backboard.railway.com/graphql/v2`.
+Railway is a cloud application deployment platform (PaaS) that builds, deploys, and scales services, databases, and cron jobs from a Git repository or Docker image. Its programmatic surface is a GraphQL-first Public API served at https://backboard.railway.com/graphql/v2 - the same API that powers the Railway dashboard. There is no REST API; all queries and mutations are issued as GraphQL POST requests, and real-time build, deployment, and environment log streams are delivered as GraphQL subscriptions over a WebSocket endpoint at wss://backboard.railway.com/graphql/v2.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/railway-app/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/railway-app/refs/heads/main/apis.yml)
+**Areas:** Deployment · Platform-as-a-Service · Cloud · Infrastructure · GraphQL · DevOps · Real-Time
 
-## Transport reality
+## Railway on APIs.io
 
-- **GraphQL over HTTP** (`https://backboard.railway.com/graphql/v2`) - every query and mutation is an HTTP `POST` with a JSON body `{ "query": "...", "variables": { ... } }`.
-- **GraphQL subscriptions over WebSocket** (`wss://backboard.railway.com/graphql/v2`) - real-time log streaming using the `graphql-transport-ws` / `graphql-ws` subprotocol. This is what `railway logs` streams from.
-- **No REST** - Railway does not publish a REST API, so this repository intentionally contains **no** `openapi/` directory. The GraphQL surface is documented in [`graphql/railway-app-schema.graphql`](graphql/railway-app-schema.graphql) and [`graphql/railway-app-graphql.md`](graphql/railway-app-graphql.md).
+Everything profiled for Railway is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/railway-app/](https://apis.io/providers/railway-app/)** — or go straight to one of the APIs or properties below.
 
-## Authentication
+### APIs (13)
 
-| Token type | Scope | Header |
-| --- | --- | --- |
-| Account token | All resources across every workspace | `Authorization: Bearer <TOKEN>` |
-| Workspace token | A single workspace | `Authorization: Bearer <TOKEN>` |
-| Project token | A single project environment | `Project-Access-Token: <TOKEN>` |
-| OAuth access token | User-granted permissions | `Authorization: Bearer <TOKEN>` |
+- [Railway Projects API](https://apis.io/apis/railway-app/railway-app-projects-api/) — GraphQL operations for creating, reading, updating, and deleting Railway projects - the top-level container for services and environments. Queries include…
+- [Railway Services API](https://apis.io/apis/railway-app/railway-app-services-api/) — GraphQL operations for managing services and their per-environment service instances. Queries include service and serviceInstance; mutations include…
+- [Railway Deployments API](https://apis.io/apis/railway-app/railway-app-deployments-api/) — GraphQL operations for triggering and managing deployments. Queries include deployment and deployments; mutations include serviceInstanceDeployV2,…
+- [Railway Environments API](https://apis.io/apis/railway-app/railway-app-environments-api/) — GraphQL operations for isolated project environments (for example production and staging). Queries include environment and environments; mutations include…
+- [Railway Variables API](https://apis.io/apis/railway-app/railway-app-variables-api/) — GraphQL operations for service and environment configuration variables. Queries include variables; mutations include variableUpsert, variableDelete, and…
+- [Railway Volumes API](https://apis.io/apis/railway-app/railway-app-volumes-api/) — GraphQL operations for persistent volumes attached to services. Queries include volume; mutations include volumeCreate, volumeUpdate, volumeDelete, and…
+- [Railway Plugins API](https://apis.io/apis/railway-app/railway-app-plugins-api/) — GraphQL operations for legacy plugins (managed database add-ons such as Postgres, MySQL, Redis, and MongoDB). Queries include plugin; mutations include…
+- [Railway Custom Domains API](https://apis.io/apis/railway-app/railway-app-custom-domains-api/) — GraphQL operations for attaching custom and Railway-provided domains to a service. Queries include customDomain and domains; mutations include…
+- [Railway TCP Proxies API](https://apis.io/apis/railway-app/railway-app-tcp-proxies-api/) — GraphQL operations for exposing a service over raw TCP. Queries include tcpProxies; mutations include tcpProxyCreate and tcpProxyDelete.
+- [Railway Usage and Metrics API](https://apis.io/apis/railway-app/railway-app-usage-metrics-api/) — GraphQL operations for reading resource consumption and cost. Queries include usage, estimatedUsage, and metrics for per-service vCPU, memory, network…
+- [Railway Teams and Workspaces API](https://apis.io/apis/railway-app/railway-app-teams-api/) — GraphQL operations for the authenticated account, its workspaces, teams, and members. Queries include me, workspace, and workspaces; mutations include…
+- [Railway Webhooks API](https://apis.io/apis/railway-app/railway-app-webhooks-api/) — GraphQL operations for project webhooks that notify external URLs of deployment status changes. Queries include projectWebhooks; mutations include…
+- [Railway Logs API](https://apis.io/apis/railway-app/railway-app-logs-api/) — GraphQL log surface for builds, deployments, environments, and HTTP traffic. Available both as point-in-time queries (buildLogs, deploymentLogs,…
 
-## Tags
+### Published properties
 
-- Deployment
-- PaaS
-- Cloud
-- Infrastructure
-- GraphQL
-- DevOps
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## Timestamps
+#### AsyncAPI (1)
 
-- **Created:** 2026-07-02
-- **Modified:** 2026-07-02
+Event-driven and webhook contracts.
 
-## APIs
+- [Railway GraphQL Subscriptions (WebSocket)](https://apis.io/asyncapis/railway-app/railway-app-asyncapi/)
 
-Each "API" below is a logical grouping of GraphQL operations against the single `/graphql/v2` endpoint.
+#### Event channels (4)
 
-### Railway Projects API
+Individual events and webhooks the provider emits.
 
-GraphQL operations for creating, reading, updating, and deleting projects. Queries: `project`, `projects`. Mutations: `projectCreate`, `projectUpdate`, `projectDelete`.
+- [buildLogs](https://apis.io/channels/railway-app/buildlogs/)
+- [deploymentLogs](https://apis.io/channels/railway-app/deploymentlogs/)
+- [environmentLogs](https://apis.io/channels/railway-app/environmentlogs/)
+- [httpLogs](https://apis.io/channels/railway-app/httplogs/)
 
-### Railway Services API
+#### GraphQL (1)
 
-Manage services and per-environment service instances. Queries: `service`, `serviceInstance`. Mutations: `serviceCreate`, `serviceUpdate`, `serviceInstanceUpdate`, `serviceConnect`, `serviceDisconnect`, `serviceDelete`.
+GraphQL schemas.
 
-### Railway Deployments API
+- [Railway GraphQL Public API](https://apis.io/graphqls/railway-app/railway-app-graphql/)
 
-Trigger and manage deployments. Queries: `deployment`, `deployments`. Mutations: `serviceInstanceDeployV2`, `serviceInstanceRedeploy`, `deploymentRedeploy`, `deploymentRestart`, `deploymentStop`, `deploymentCancel`, `deploymentRemove`.
+#### Collections (1)
 
-### Railway Environments API
+Postman and Open Collection request collections.
 
-Isolated project environments. Queries: `environment`, `environments`. Mutations: `environmentCreate`, `environmentDelete`, `environmentPatchCommitStage`.
+- [Railway GraphQL Public API](https://apis.io/collections/railway-app/open-railway-app/)
 
-### Railway Variables API
+#### Governance rules (1)
 
-Service and environment configuration variables. Query: `variables`. Mutations: `variableUpsert`, `variableDelete`, `variableCollectionUpsert`.
+Spectral rulesets for the provider's contracts.
 
-### Railway Volumes API
+- [Railway — asyncapi rules](https://apis.io/rules/railway-app/railway-app-asyncapi-spectral-rules/)
 
-Persistent volumes. Query: `volume`. Mutations: `volumeCreate`, `volumeUpdate`, `volumeDelete`, `volumeInstanceUpdate`.
+#### Security (2)
 
-### Railway Plugins API
+Authentication, trust centre, and vulnerability disclosure.
 
-Managed database add-ons (Postgres, MySQL, Redis, MongoDB). Query: `plugin`. Mutations: `pluginCreate`, `pluginUpdate`, `pluginRestart`, `pluginDelete`.
+- [Railway App Domain Security](https://apis.io/security/railway-app/railway-app-domain-security/)
+- [Railway App Trust Center](https://apis.io/security/railway-app/railway-app-trust-center/)
 
-### Railway Custom Domains API
+#### Plans and pricing (1)
 
-Attach custom and Railway-provided domains. Queries: `customDomain`, `domains`. Mutations: `customDomainCreate`, `customDomainDelete`, `serviceDomainCreate`.
+Published plans, tiers and prices.
 
-### Railway TCP Proxies API
+- [Railway App Plans Pricing](https://apis.io/plans/railway-app/railway-app-plans-pricing/)
 
-Expose a service over raw TCP. Query: `tcpProxies`. Mutations: `tcpProxyCreate`, `tcpProxyDelete`.
+#### Rate limits (1)
 
-### Railway Usage and Metrics API
+Published request limits.
 
-Read resource consumption and cost. Queries: `usage`, `estimatedUsage`, `metrics`.
+- [Railway App Rate Limits](https://apis.io/rate-limits/railway-app/railway-app-rate-limits/)
 
-### Railway Teams and Workspaces API
+#### FinOps (1)
 
-The authenticated account, its workspaces, teams, and members. Queries: `me`, `workspace`, `workspaces`. Mutations: `workspaceUpdate`, `teamMemberInvite`.
+What the API costs to run, by operation.
 
-### Railway Webhooks API
+- [Railway App Finops](https://apis.io/finops/railway-app/railway-app-finops/)
 
-Project webhooks for deployment status changes. Query: `projectWebhooks`. Mutations: `webhookCreate`, `webhookUpdate`, `webhookDelete`.
+## Where to find this API
 
-### Railway Logs API
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-Build, deployment, environment, and HTTP logs as both point-in-time queries (`buildLogs`, `deploymentLogs`, `environmentLogs`, `httpLogs`) and real-time GraphQL subscriptions over WebSocket. Modeled additionally as AsyncAPI at [`asyncapi/railway-app-asyncapi.yml`](asyncapi/railway-app-asyncapi.yml).
-
-## Rate limits
-
-The GraphQL Public API is rate limited per plan (requests per hour / requests per second): Trial 100 RPH, Hobby 1,000 RPH / 10 RPS, Pro 10,000 RPH / 50 RPS, Enterprise custom. Responses carry `X-RateLimit-*` headers; throttled requests return HTTP 429 with `Retry-After`. See [`rate-limits/railway-app-rate-limits.yml`](rate-limits/railway-app-rate-limits.yml).
-
-## Pricing
-
-Flat monthly subscription plus usage-based, per-second billing for vCPU (~$20/vCPU/mo), memory (~$10/GB/mo), network egress ($0.05/GB), and volume storage (~$0.15/GB/mo). Plans: Trial ($5 credit), Hobby ($5/mo), Pro ($20/seat/mo), Enterprise (custom). See [`plans/railway-app-plans-pricing.yml`](plans/railway-app-plans-pricing.yml) and [`finops/railway-app-finops.yml`](finops/railway-app-finops.yml).
-
-## Common Properties
-
-- [GitHub Organization](https://github.com/railwayapp)
-- [LinkedIn](https://www.linkedin.com/company/railwayapp)
 - [Website](https://railway.com/)
 - [Documentation](https://docs.railway.com)
-- [Plans](plans/railway-app-plans-pricing.yml)
-- [Rate Limits](rate-limits/railway-app-rate-limits.yml)
-- [Fin Ops](finops/railway-app-finops.yml)
+- [Blog](https://blog.railway.com/rss.xml)
+- [GitHub](https://github.com/railwayapp)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 28.6** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 71.4 |
+| Contract quality | 49.6 |
+| Contract governance | 11.4 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 19.0 |
+| Access clarity | 15.8 |
+
+**Agent readiness 14.7** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | — |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 10.8** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/railway-app/](https://apis.io/providers/railway-app/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Railway: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/railway-app/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
